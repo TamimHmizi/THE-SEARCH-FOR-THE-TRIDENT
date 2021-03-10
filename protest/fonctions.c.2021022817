@@ -1,0 +1,287 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <SDL/SDL.h>
+#include <SDL/SDL_image.h>
+#include <SDL/SDL_mixer.h>
+#include <SDL/SDL_ttf.h>
+#include "fonctions.h"
+
+void Afficher_menu_principal(SDL_Surface *ecran , SDL_Surface *imageDeFond ,SDL_Surface *imageBoutonQuitter ,SDL_Surface *imageBoutonJouer ,SDL_Surface *imageBoutonOptions , SDL_Rect positionFond, SDL_Rect positionQuitter, SDL_Rect positionJouer, SDL_Rect positionOptions , Mix_Music* music, Mix_Chunk* son, SDL_Surface *texte)
+{ 
+    /* On blitte par-dessus l'écran */
+    SDL_BlitSurface(imageDeFond, NULL, ecran, &positionFond);
+    
+    
+
+    SDL_BlitSurface(imageBoutonQuitter, NULL, ecran, &positionQuitter);
+
+
+    SDL_BlitSurface(imageBoutonJouer, NULL, ecran, &positionJouer);
+    
+
+    SDL_BlitSurface(imageBoutonOptions, NULL, ecran, &positionOptions);
+
+    SDL_Flip(ecran);
+
+    Mix_PlayMusic(music, -1); // Joue notre musique    
+
+
+    SDL_BlitSurface(texte, NULL, ecran, &positionFond);
+
+
+    //Mix_AllocateChannels(32); //Allouer 32 canaux
+    /*Mix_Volume(1, MIX_MAX_VOLUME); //Mettre à mi-volume le post 1
+    //Mix_Chunk *son;//Créer un pointeur pour stocker un .WAV
+    
+    /*Mix_VolumeChunk(son, MIX_MAX_VOLUME); //Mettre un volume pour ce wav
+
+
+    /*
+
+    if(son==NULL)
+      {
+          printf("ERREUR: %s\n", SDL_GetError());
+          return 1;
+       }*/
+
+
+}
+
+
+void Afficher_menu_jouer(SDL_Surface *ecran , SDL_Surface *imageDeFondJouer ,SDL_Surface *imageBoutonRetourMenu , SDL_Rect positionBoutonRetourMenu, SDL_Rect positionFondJouer, Mix_Music* music )
+{  
+    imageDeFondJouer = SDL_LoadBMP("./mediajeux/bg2.bmp");              
+    SDL_BlitSurface(imageDeFondJouer, NULL, ecran, &positionFondJouer);
+                
+    imageBoutonRetourMenu = IMG_Load("./mediajeux/RetourMenu.png");
+    SDL_BlitSurface(imageBoutonRetourMenu, NULL, ecran, &positionBoutonRetourMenu);
+    
+    SDL_Flip(ecran);
+    
+    Mix_OpenAudio( 44100, MIX_DEFAULT_FORMAT, MIX_DEFAULT_CHANNELS, 1024 );
+    music = Mix_LoadMUS("./mediajeux/boucle2.mp3"); // Charge notre musique
+
+
+    Mix_PlayMusic(music, -1); // Joue notre musique     
+
+}
+
+void Afficher_menu_options(SDL_Surface *ecran , SDL_Surface *imageDeFondJouer ,SDL_Surface *imageBoutonRetourMenu , SDL_Rect positionBoutonRetourMenu, SDL_Rect positionFondJouer, Mix_Music* music,SDL_Surface *imageVolume, SDL_Surface *imagePasVolume, SDL_Rect positionimageVolume, SDL_Rect positionimagePasVolume )
+{  
+    imageDeFondJouer = SDL_LoadBMP("./mediajeux/bg3.bmp");              
+    SDL_BlitSurface(imageDeFondJouer, NULL, ecran, &positionFondJouer);
+                
+    imageBoutonRetourMenu = IMG_Load("./mediajeux/RetourMenu.png");
+    SDL_BlitSurface(imageBoutonRetourMenu, NULL, ecran, &positionBoutonRetourMenu);
+
+    imageVolume = IMG_Load("./mediajeux/Son_on_50.png");
+    SDL_BlitSurface(imageVolume, NULL, ecran, &positionimageVolume);
+
+    imagePasVolume = IMG_Load("./mediajeux/Son_off_50.png");
+    SDL_BlitSurface(imagePasVolume, NULL, ecran, &positionimagePasVolume);
+    
+    SDL_Flip(ecran);
+    
+    Mix_OpenAudio( 44100, MIX_DEFAULT_FORMAT, MIX_DEFAULT_CHANNELS, 1024 );
+    music = Mix_LoadMUS("./mediajeux/boucle3.mp3"); // Charge notre musique
+
+
+    Mix_PlayMusic(music, -1); // Joue notre musique     
+
+}
+
+int Menu(SDL_Surface *ecran,SDL_Surface *imageDeFondJouer ,SDL_Surface *imageDeFondOptions ,SDL_Surface *imageBoutonRetourMenu, SDL_Rect positionFondJouer, SDL_Rect positionFondOptions, SDL_Rect positionBoutonRetourMenu, SDL_Event event,SDL_Surface *imageDeFond ,SDL_Surface *imageBoutonQuitter ,SDL_Surface *imageBoutonJouer ,SDL_Surface *imageBoutonOptions , SDL_Rect positionFond, SDL_Rect positionQuitter, SDL_Rect positionJouer, SDL_Rect positionOptions , Mix_Music* music, Mix_Chunk *son,SDL_Surface *texte)
+{
+    int continuer, etatboutonQuitter, etatboutonJouer, etatboutonOptions;
+
+    Afficher_menu_principal(ecran , imageDeFond ,imageBoutonQuitter ,imageBoutonJouer ,imageBoutonOptions , positionFond, positionQuitter, positionJouer, positionOptions , music ,son,texte);
+       
+printf("balise\n");
+    //Mix_AllocateChannels(32); //Allouer 32 canaux
+    /*Mix_Volume(1, MIX_MAX_VOLUME); //Mettre à mi-volume le post 1
+    
+    Mix_VolumeChunk(son, MIX_MAX_VOLUME); //Mettre un volume pour ce wav
+    //Mix_PlayChannel(1, son, 0); 
+
+    SDL_WaitEvent(&event); /* On attend un événement qu'on récupère dans event */
+    etatboutonQuitter=0;
+    etatboutonJouer=0;
+    etatboutonOptions=0;
+
+    do 
+    {
+     /* On attend un événement qu'on récupère dans event */
+   
+        switch(event.type) /* On teste le type d'événement */
+        {
+            case SDL_QUIT: /* Si c'est un événement QUITTER */
+                continuer = 0; /* On met le booléen à 0, donc la boucle va s'arrêter */
+                return continuer;
+                break;
+
+            case SDL_KEYDOWN:
+                switch (event.key.keysym.sym)
+                {
+                    case SDLK_ESCAPE: /* Appui sur la touche Echap, on arrête le programme */
+                        continuer = 0;
+                        return continuer;
+                        break;
+                    case SDLK_q: /* Appui sur la touche q, on arrête le programme */
+                        continuer = 0;
+                        return continuer;
+                        break;
+                    case SDLK_j: /* Appui sur la touche j, on va vers jouer */
+                        continuer = 2;
+                        return continuer;
+                        break;
+                }
+                break;
+                
+            case SDL_MOUSEBUTTONUP:
+            // clique bouton quitter
+            	if(event.button.x >= positionQuitter.x && event.button.x <= (positionQuitter.x+100) && event.button.y >= positionQuitter.y && event.button.y <= (positionQuitter.y+75))
+            		{
+            		 continuer = 0;
+            		 return continuer;
+            		}
+            //clique bouton jouer
+		        else if(event.button.x >= positionJouer.x && event.button.x <= (positionJouer.x+100) && event.button.y >= positionJouer.y && event.button.y <= (positionJouer.y+75))
+            		{          		
+
+                        continuer = 2;
+                        return continuer;
+                    }
+            //clique bouton options
+                    else if(event.button.x >= positionOptions.x && event.button.x <= (positionOptions.x+100) && event.button.y >= positionOptions.y && event.button.y <= (positionOptions.y+75))
+            		{
+
+                        continuer = 3;
+                        return continuer;
+                    }
+            	break;
+
+            case SDL_MOUSEMOTION:
+            //changement image bouton quitter 
+                if( event.motion.x >= positionQuitter.x && event.motion.x <= (positionQuitter.x+100) && event.motion.y >= positionQuitter.y && event.motion.y <= (positionQuitter.y+75) && etatboutonQuitter==0)
+                {
+                    
+                    Mix_PlayChannel(1, son, 0);
+                    //Mix_FreeChunk(son);
+
+                    imageBoutonQuitter=SDL_LoadBMP("./mediajeux/bouton_quitter_2.bmp");
+                    SDL_BlitSurface(imageBoutonQuitter, NULL, ecran, &positionQuitter);
+                    SDL_Flip(imageBoutonQuitter);
+                    etatboutonQuitter=1;
+                }
+                if( event.motion.x < positionQuitter.x || event.motion.x > (positionQuitter.x+100) || event.motion.y < positionQuitter.y || event.motion.y > (positionQuitter.y+75) && etatboutonQuitter==1)
+                {
+                    imageBoutonQuitter=SDL_LoadBMP("./mediajeux/bouton_quitter_1.bmp");
+                    SDL_BlitSurface(imageBoutonQuitter, NULL, ecran, &positionQuitter);
+                    SDL_Flip(imageBoutonQuitter);
+                    etatboutonQuitter=0;
+                }
+            //changement image bouton jouer
+                if( event.motion.x >= positionJouer.x && event.motion.x <= (positionJouer.x+100) && event.motion.y >= positionJouer.y && event.motion.y <= (positionJouer.y+75) && etatboutonJouer==0)
+                {
+                    Mix_PlayChannel(1, son, 0);
+
+                    imageBoutonJouer=SDL_LoadBMP("./mediajeux/bouton_jouer_2.bmp");
+                    SDL_BlitSurface(imageBoutonJouer, NULL, ecran, &positionJouer);
+                    SDL_Flip(ecran);
+                    etatboutonJouer=1;
+                }
+                if( event.motion.x < positionJouer.x || event.motion.x >(positionJouer.x+100) || event.motion.y < positionJouer.y || event.motion.y >(positionJouer.y+75) && etatboutonJouer==1)
+                {
+                    imageBoutonJouer=SDL_LoadBMP("./mediajeux/bouton_jouer_1.bmp");
+                    SDL_BlitSurface(imageBoutonJouer, NULL, ecran, &positionJouer);
+                    SDL_Flip(ecran);
+                    etatboutonJouer=0;
+                }
+            //changement image bouton options
+                if( event.motion.x >= positionOptions.x && event.motion.x <= (positionOptions.x+100) && event.motion.y >= positionOptions.y && event.motion.y <= (positionOptions.y+75) && etatboutonOptions==0)
+                {
+                    Mix_PlayChannel(1, son, 0);
+
+                    imageBoutonOptions=SDL_LoadBMP("./mediajeux/bouton_options_2.bmp");
+                    SDL_BlitSurface(imageBoutonOptions, NULL, ecran, &positionOptions);
+                    SDL_Flip(ecran);
+                    etatboutonOptions=1;
+                }
+                if(event.motion.x < positionOptions.x || event.motion.x >(positionOptions.x+100) || event.motion.y < positionOptions.y || event.motion.y >(positionOptions.y+75) && etatboutonOptions==1)
+                {
+                    imageBoutonOptions=SDL_LoadBMP("./mediajeux/bouton_options_1.bmp");
+                    SDL_BlitSurface(imageBoutonOptions, NULL, ecran, &positionOptions);
+                    SDL_Flip(ecran);
+                    etatboutonOptions=0;
+                }
+                break;
+        }
+    }while(SDL_WaitEvent(&event));
+}
+
+int jouer(SDL_Surface *ecran,SDL_Surface *imageDeFondJouer ,SDL_Surface *imageDeFondOptions ,SDL_Surface *imageBoutonRetourMenu, SDL_Rect positionFondJouer, SDL_Rect positionFondOptions, SDL_Rect positionBoutonRetourMenu, SDL_Event event,SDL_Surface *imageDeFond ,SDL_Surface *imageBoutonQuitter ,SDL_Surface *imageBoutonJouer ,SDL_Surface *imageBoutonOptions , SDL_Rect positionFond, SDL_Rect positionQuitter, SDL_Rect positionJouer, SDL_Rect positionOptions , Mix_Music* music)
+{
+    int continuer;
+    Afficher_menu_jouer(ecran , imageDeFondJouer ,imageBoutonRetourMenu , positionBoutonRetourMenu, positionFondJouer, music );
+    SDL_WaitEvent(&event); /* On attend un événement qu'on récupère dans event */
+    do 
+    {
+        switch(event.type) /* On teste le type d'événement */
+        {
+            case SDL_QUIT: /* Si c'est un événement QUITTER */
+                continuer = 0; /* On met le booléen à 0, donc la boucle va s'arrêter */
+                return continuer;
+                break;
+                
+            case SDL_MOUSEBUTTONUP:
+            // clique bouton quitter
+                if(event.button.x >= positionBoutonRetourMenu.x && event.button.x <= (positionBoutonRetourMenu.x+117) && event.button.y >= positionBoutonRetourMenu.y && event.button.y <= (positionBoutonRetourMenu.y+75))
+                    {
+                     continuer = 1;
+                     return continuer;
+                    }
+                break;
+        }
+    }while(SDL_WaitEvent(&event));
+
+}
+
+int options(SDL_Surface *ecran,SDL_Surface *imageDeFondJouer ,SDL_Surface *imageDeFondOptions ,SDL_Surface *imageBoutonRetourMenu, SDL_Rect positionFondJouer, SDL_Rect positionFondOptions, SDL_Rect positionBoutonRetourMenu, SDL_Event event,SDL_Surface *imageDeFond ,SDL_Surface *imageBoutonQuitter ,SDL_Surface *imageBoutonJouer ,SDL_Surface *imageBoutonOptions , SDL_Rect positionFond, SDL_Rect positionQuitter, SDL_Rect positionJouer, SDL_Rect positionOptions , Mix_Music* music,SDL_Surface *imageVolume, SDL_Surface *imagePasVolume, SDL_Rect positionimageVolume, SDL_Rect positionimagePasVolume)
+{
+    int continuer;
+    Afficher_menu_options(ecran , imageDeFondJouer ,imageBoutonRetourMenu , positionBoutonRetourMenu, positionFondJouer, music, imageVolume, imagePasVolume, positionimageVolume,  positionimagePasVolume );
+    SDL_WaitEvent(&event); /* On attend un événement qu'on récupère dans event */
+    do 
+    {
+        switch(event.type) /* On teste le type d'événement */
+        {
+            case SDL_QUIT: /* Si c'est un événement QUITTER */
+                continuer = 0; /* On met le booléen à 0, donc la boucle va s'arrêter */
+                return continuer;
+                break;
+                
+            case SDL_MOUSEBUTTONUP:
+            // clique bouton quitter
+                if(event.button.x >= positionBoutonRetourMenu.x && event.button.x <= (positionBoutonRetourMenu.x+117) && event.button.y >= positionBoutonRetourMenu.y && event.button.y <= (positionBoutonRetourMenu.y+75))
+                    {
+                     continuer = 1;
+                     return continuer;
+                    }
+                if(event.button.x >= positionimageVolume.x && event.button.x <= (positionimageVolume.x+50) && event.button.y >= positionimageVolume.y && event.button.y <= (positionimageVolume.y+46))
+                    {
+                     Mix_VolumeMusic(MIX_MAX_VOLUME);
+                    }
+                if(event.button.x >= positionimagePasVolume.x && event.button.x <= (positionimagePasVolume.x+50) && event.button.y >= positionimagePasVolume.y && event.button.y <= (positionimagePasVolume.y+46))
+                    {
+                     Mix_VolumeMusic(0);
+                     //const SDL_VideoInfo* myPointer = SDL_GetVideoInfo();
+ 
+                    // Reconfigure le mode vidéo
+                    //SDL_SetVideoMode(myPointer->current_w, myPointer->current_h, 16, SDL_DOUBLEBUF|SDL_FULLSCREEN);
+                    }
+
+                break;
+        }
+    }while(SDL_WaitEvent(&event));
+
+}
